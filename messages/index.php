@@ -1,16 +1,22 @@
 <?php
 
-$payload = $_POST['payload'];
+if (!empty($_POST['payload'])) {
+    $payload = [];
 
-if (!empty($payload)){
+    $payload = json_decode($_POST['payload']);
+
+    $responsejson = [];
 
     var_dump($payload);
-    $responsejson = new \StdClass();
 
-    foreach ($payload['inputs'] as $inputs)
-        $response = [
-            "external_id" => $inputs['uuid'],
-            "content" => $inputs['msg']
+    $inputs = $payload->inputs;
+
+    var_dump($inputs);
+
+    foreach ($inputs as $input)
+        $response[] = [
+            "external_id" => $input->uuid,
+            "content" => $input->msg
         ];
 
     $responsejson = json_encode($response);
