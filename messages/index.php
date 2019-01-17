@@ -4,6 +4,7 @@ $payload = $_POST['payload'];
 
 if (!empty($payload)){
 
+    var_dump($payload);
     $responsejson = new \StdClass();
 
     foreach ($payload['inputs'] as $inputs)
