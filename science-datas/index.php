@@ -12,7 +12,7 @@ if (!empty(file_get_contents("php://input"))) {
 
     $request = json_decode(file_get_contents("php://input"));
 
-    $uuid = "";
+    $uuid = $request->uuid;
 
     $datas = $request->datas;
 
