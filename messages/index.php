@@ -32,7 +32,7 @@ $client = new Client([
 ]);
 
 foreach ($inputs as $input) {
-    if (!empty($inputs->msg)) {
+    if (!empty($input->msg)) {
         $response = [
             "external_id" => $input->uuid,
             "content" => $input->msg
@@ -55,7 +55,7 @@ foreach ($inputs as $input) {
                 echo Psr7\str($e->getResponse());
             }
         }
-    } elseif (!empty($inputs->text)) {
+    } elseif (!empty($input->text)) {
         $response = [
             "external_id" => $input->uuid,
             "message" => $input->text
@@ -78,8 +78,7 @@ foreach ($inputs as $input) {
                 echo Psr7\str($e->getResponse());
             }
         }
-    }
-    elseif (!empty($inputs->content)){
+    } elseif (!empty($input->content)){
         $response = [
             "external_id" => $input->uuid,
             "message" => $input->content
