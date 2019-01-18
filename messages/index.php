@@ -16,6 +16,10 @@ if (!empty($request->body)) {
 
 if (!empty($request->type)) {
     $type = $request->type;
+}
+else {
+    $type = "";
+}
     switch ($type) {
         case "default":
             $payload = $request->payload;
@@ -141,4 +145,3 @@ if (!empty($request->type)) {
             exit();
             break;
     }
-}
