@@ -31,6 +31,10 @@ $client = new Client([
     'timeout' => 8.0,
 ]);
 
+if (empty($inputs)){
+    header("HTTP/1.1 400 Bad Request");
+    exit();
+}
 foreach ($inputs as $input) {
     if (!empty($input->msg)) {
         $response = [
