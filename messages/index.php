@@ -15,22 +15,17 @@ $payload = $request->payload;
 
 $inputs = $payload->inputs;
 
-
-$request = [];
-
-$request = json_decode(file_get_contents("php://input"));
-
-$payload = $request->payload;
-
-$inputs = $payload->inputs;
-
 $client = new Client([
     // Base URI is used with relative requests
     'base_uri' => 'http://nightcode-phobos.cleverapps.io/input/',
     // You can set any number of default request options.
-    'timeout' => 2.0,
+    'timeout' => 8.0,
 ]);
 
+if (empty($inputs)){
+    header("HTTP/1.1 400 Bad Request");
+    exit();
+}
 foreach ($inputs as $input) {
     if (!empty($input->msg)) {
         $response = [
