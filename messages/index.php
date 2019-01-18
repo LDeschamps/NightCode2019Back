@@ -19,7 +19,6 @@ if (!empty($request->type)) {
 }
 switch ($type) {
     case "default":
-        echo "1";
         $payload = $request->payload;
         $inputs = $payload->inputs;
         if (empty($inputs)) {
@@ -60,7 +59,6 @@ switch ($type) {
         }
         break;
     case "message-to-mom":
-        echo "2";
         $payload = $request->payload;
         $messages = $payload->messages;
         if (empty($messages)) {
@@ -101,7 +99,6 @@ switch ($type) {
         }
         break;
     case "for-mr-clerentin":
-        echo "3";
         $messages = $request->messages;
         if (empty($messages)) {
             header("HTTP/1.1 400 Bad Request");
@@ -142,7 +139,7 @@ switch ($type) {
         break;
     default:
         $payload = $request->payload;
-        if (empty($payload)){
+        if (empty($payload)) {
             header("HTTP/1.1 400 Bad Request");
             exit();
         }
@@ -153,7 +150,10 @@ switch ($type) {
         }
         $baseuri = "http://nightcode-phobos.cleverapps.io/input/messages";
         foreach ($inputs as $input) {
-            if (!empty($input->msg)) {
+            if (empty($input->msg)) {
+                header("HTTP/1.1 400 Bad Request");
+                exit();
+            } else {
                 $response = [
                     "external_id" => $input->uuid,
                     "content" => $input->msg
@@ -178,9 +178,6 @@ switch ($type) {
                     header("HTTP/1.1 400 Bad Request");
                     exit();
                 }
-            } else {
-                header("HTTP/1.1 400 Bad Request");
-                exit();
             }
         }
         break;
