@@ -1,35 +1,24 @@
 <?php
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
-
 require '../vendor/autoload.php';
-
 $php_input = file_get_contents("php://input");
 if (isset($php_input)) {
     $request = [];
-
     $request = json_decode(file_get_contents("php://input"));
-
-    var_dump($request);
-
     if(!empty($request->uuid) && !empty($request->datas)){
-
         $uuid = $request->uuid;
         $datas = $request->datas;
-        
-        if(!empty($data->type) && !empty($data->unit) && !empty($data->value)){
-
-            $client = new Client([
-            // Base URI is used with relative requests
-            'base_uri' => 'http://nightcode-phobos.cleverapps.io/input/science-datas/',
-            // You can set any number of default request options.
-            'timeout' => 2.0,
-            ]);
-
-            foreach ($datas as $data) {
+        foreach($datas as $data){
+            if(!empty($data->type) && !empty($data->unit) && !empty($data->value)){
+                $client = new Client([
+                // Base URI is used with relative requests
+                'base_uri' => 'http://nightcode-phobos.cleverapps.io/input/science-datas/',
+                // You can set any number of default request options.
+                'timeout' => 2.0,
+                ]);
                 switch($data->unit){
                         case "celsius-degrees":
                                 $donnees[] = [
@@ -62,42 +51,33 @@ if (isset($php_input)) {
                         default:
                                 break;
                 }
-            }
-
-            $response = [
-                            "external_id" => $uuid,
-                            "datas" => $donnees
-                        ];
-
-            $response = json_encode($response);
-
-            $request = new Request('POST', 'add',
-                [
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json',
-                        'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
-
-                ],$response);
-
-            try {
-                $responsePost = $client->send($request);
-            } catch (RequestException $e) {
-                echo Psr7\str($e->getRequest());
-                if ($e->hasResponse()) {
-                    echo Psr7\str($e->getResponse());
+                $response = [
+                                "external_id" => $uuid,
+                                "datas" => $donnees
+                            ];
+                $response = json_encode($response);
+                $request = new Request('POST', 'add',
+                    [
+                            'Accept' => 'application/json',
+                            'Content-Type' => 'application/json',
+                            'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
+                    ],$response);
+                try {
+                    $responsePost = $client->send($request);
+                } catch (RequestException $e) {
+                    echo Psr7\str($e->getRequest());
+                    if ($e->hasResponse()) {
+                        echo Psr7\str($e->getResponse());
+                    }
                 }
+                $responsejson = json_encode($response);
             }
-
-            $responsejson = json_encode($response);
-        }
-        else {
-            header("HTTP/1.1 400 Bad Request");
-            return false;
+            else {
+                header("HTTP/1.1 400 Bad Request");
+            }
         }
     }
     else {
         //header("HTTP/1.1 400 Bad Request");
     }
 }
-
-    
