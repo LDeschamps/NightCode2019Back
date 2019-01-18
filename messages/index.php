@@ -15,15 +15,6 @@ $payload = $request->payload;
 
 $inputs = $payload->inputs;
 
-
-$request = [];
-
-$request = json_decode(file_get_contents("php://input"));
-
-$payload = $request->payload;
-
-$inputs = $payload->inputs;
-
 $client = new Client([
     // Base URI is used with relative requests
     'base_uri' => 'http://nightcode-phobos.cleverapps.io/input/',
