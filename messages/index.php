@@ -2,15 +2,17 @@
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
 
 require '../vendor/autoload.php';
 
-if (!empty($_POST['payload'])) {
-    $payload = [];
+if (!empty(file_get_contents("php://input"))) {
+    $request = [];
 
-    $payload = json_decode($_POST['payload']);
+    $request = json_decode(file_get_contents("php://input"));
 
-    $responsejson = [];
+    $payload = $request->payload;
 
     $inputs = $payload->inputs;
 
@@ -31,15 +33,20 @@ if (!empty($_POST['payload'])) {
 
         $request = new Request('POST', 'messages',
             [
-                'headers' => [
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
-                    'X-API-Key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
-                ]
+                    'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
+
             ],$response);
 
-        $responsePost = $client->send($request);
-        echo $responsePost->getStatusCode();
+        try {
+            $responsePost = $client->send($request);
+        } catch (RequestException $e) {
+            echo Psr7\str($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\str($e->getResponse());
+            }
+        }
     }
 
     $responsejson = json_encode($response);
