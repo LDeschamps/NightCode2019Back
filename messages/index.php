@@ -21,6 +21,7 @@ if (!empty($request->type)) {
 }
 switch ($type) {
     case "default":
+        echo "1";
         var_dump($request->payload);
         $payload = $request->payload;
         $inputs = $payload->inputs;
@@ -62,6 +63,7 @@ switch ($type) {
         }
         break;
     case "message-to-mom":
+        echo "2";
         var_dump($request->payload);
         $payload = $request->payload;
         $messages = $payload->messages;
@@ -103,6 +105,7 @@ switch ($type) {
         }
         break;
     case "for-mr-clerentin":
+        echo "3";
         var_dump($request->payload);
         $messages = $request->messages;
         if (empty($messages)) {
@@ -143,6 +146,7 @@ switch ($type) {
         }
         break;
     default:
+        echo "4";
         var_dump($request->payload);
         header("HTTP/1.1 400 Bad Request");
         exit();
