@@ -7,49 +7,59 @@ use GuzzleHttp\Exception\RequestException;
 
 require '../vendor/autoload.php';
 
-if (!empty(file_get_contents("php://input"))) {
-    $request = [];
+$request = [];
 
-    $request = json_decode(file_get_contents("php://input"));
+$request = json_decode(file_get_contents("php://input"));
 
-    $payload = $request->payload;
+$payload = $request->payload;
 
-    $inputs = $payload->inputs;
+$inputs = $payload->inputs;
 
-    $client = new Client([
-        // Base URI is used with relative requests
-        'base_uri' => 'http://nightcode-phobos.cleverapps.io/input/',
-        // You can set any number of default request options.
-        'timeout' => 2.0,
-    ]);
 
-    foreach ($inputs as $input) {
+$request = [];
+
+$request = json_decode(file_get_contents("php://input"));
+
+$payload = $request->payload;
+
+$inputs = $payload->inputs;
+
+$client = new Client([
+    // Base URI is used with relative requests
+    'base_uri' => 'http://nightcode-phobos.cleverapps.io/input/',
+    // You can set any number of default request options.
+    'timeout' => 2.0,
+]);
+
+foreach ($inputs as $input) {
+    if (!empty($inputs->uuid) && !empty($inputs->msg)) {
         $response = [
             "external_id" => $input->uuid,
             "content" => $input->msg
         ];
+    } else {
+        $response = [
+            "path" => "status",
+            "pred" => "#{400}",
+            "val" => "200"
+        ];
+    }
+    $response = json_encode($response);
 
-        $response = json_encode($response);
+    $request = new Request('POST', 'messages',
+        [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
 
-        $request = new Request('POST', 'messages',
-            [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                    'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
+        ], $response);
 
-            ],$response);
-
-        try {
-            $responsePost = $client->send($request);
-        } catch (RequestException $e) {
-            echo Psr7\str($e->getRequest());
-            if ($e->hasResponse()) {
-                echo Psr7\str($e->getResponse());
-            }
+    try {
+        $responsePost = $client->send($request);
+    } catch (RequestException $e) {
+        echo Psr7\str($e->getRequest());
+        if ($e->hasResponse()) {
+            echo Psr7\str($e->getResponse());
         }
     }
-
-    $responsejson = json_encode($response);
-
-    echo $responsejson;
 }
