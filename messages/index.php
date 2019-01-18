@@ -32,34 +32,78 @@ $client = new Client([
 ]);
 
 foreach ($inputs as $input) {
-    if (!empty($inputs->uuid) && !empty($inputs->msg)) {
+    if (!empty($inputs->msg)) {
         $response = [
             "external_id" => $input->uuid,
             "content" => $input->msg
         ];
-    } else {
-        $response = [
-            "path" => "status",
-            "pred" => "#{400}",
-            "val" => "200"
-        ];
-    }
-    $response = json_encode($response);
+        $response = json_encode($response);
 
-    $request = new Request('POST', 'messages',
-        [
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
+        $request = new Request('POST', 'messages',
+            [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+                'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
 
-        ], $response);
+            ], $response);
 
-    try {
-        $responsePost = $client->send($request);
-    } catch (RequestException $e) {
-        echo Psr7\str($e->getRequest());
-        if ($e->hasResponse()) {
-            echo Psr7\str($e->getResponse());
+        try {
+            $responsePost = $client->send($request);
+        } catch (RequestException $e) {
+            echo Psr7\str($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\str($e->getResponse());
+            }
         }
+    } elseif (!empty($inputs->text)) {
+        $response = [
+            "external_id" => $input->uuid,
+            "message" => $input->text
+        ];
+        $response = json_encode($response);
+
+        $request = new Request('POST', 'moms-messages/add',
+            [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+                'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
+
+            ], $response);
+
+        try {
+            $responsePost = $client->send($request);
+        } catch (RequestException $e) {
+            echo Psr7\str($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\str($e->getResponse());
+            }
+        }
+    }
+    elseif (!empty($inputs->content)){
+        $response = [
+            "external_id" => $input->uuid,
+            "message" => $input->content
+        ];
+        $response = json_encode($response);
+
+        $request = new Request('POST', 'clerentins-messages/add',
+            [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+                'x-api-key' => 'f5849aa8e9a7b4df436902587209058011484473a0c66c0db0440985671a2589'
+
+            ], $response);
+
+        try {
+            $responsePost = $client->send($request);
+        } catch (RequestException $e) {
+            echo Psr7\str($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\str($e->getResponse());
+            }
+        }
+    }
+    else{
+        header("HTTP/1.1 400 Bad Request");
     }
 }
